@@ -16,7 +16,7 @@
 
 'use strict';
 
-var DEFAULT_URL = 'compressed.tracemonkey-pldi-09.pdf';
+var DEFAULT_URL = 'https://www.bestbets.com/content/filenotfound.pdf';
 
 if (typeof PDFJSDev !== 'undefined' && PDFJSDev.test('CHROME')) {
   (function rewriteUrlClosure() {
@@ -74,6 +74,7 @@ function getViewerConfiguration() {
       print: document.getElementById('print'),
       presentationModeButton: document.getElementById('presentationMode'),
       download: document.getElementById('download'),
+	  subscribe: document.getElementById('subscribe'),
       viewBookmark: document.getElementById('viewBookmark'),
     },
     secondaryToolbar: {
@@ -86,6 +87,7 @@ function getViewerConfiguration() {
       openFileButton: document.getElementById('secondaryOpenFile'),
       printButton: document.getElementById('secondaryPrint'),
       downloadButton: document.getElementById('secondaryDownload'),
+	   subscribeButton: document.getElementById('secondarySubscribe'),
       viewBookmarkButton: document.getElementById('secondaryViewBookmark'),
       firstPageButton: document.getElementById('firstPage'),
       lastPageButton: document.getElementById('lastPage'),

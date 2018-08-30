@@ -30,25 +30,30 @@
   background-clip: content-box;
   border-image: url(images/shadow.png) 9 9 repeat;
   background-color: white;
+  box-sizing: content-box;
 }
 
 .pdfViewer.removePageBorders .page {
   margin: 0px auto 10px auto;
   border: none;
+  box-sizing: content-box;
 }
 
 .pdfViewer.singlePageView {
   display: inline-block;
+  box-sizing: content-box;
 }
 
 .pdfViewer.singlePageView .page {
   margin: 0;
   border: none;
+  box-sizing: content-box;
 }
 
 .pdfViewer .page canvas {
   margin: 0;
   display: block;
+  box-sizing: content-box;
 }
 
 .pdfViewer .page .loadingIcon {
@@ -64,19 +69,23 @@
 .pdfPresentationMode:-webkit-full-screen .pdfViewer .page {
   margin-bottom: 100%;
   border: 0;
+  box-sizing: content-box;
 }
 
 .pdfPresentationMode:-moz-full-screen .pdfViewer .page {
   margin-bottom: 100%;
   border: 0;
+  box-sizing: content-box;
 }
 
 .pdfPresentationMode:-ms-fullscreen .pdfViewer .page {
   margin-bottom: 100% !important;
   border: 0;
+  box-sizing: content-box;
 }
 
 .pdfPresentationMode:fullscreen .pdfViewer .page {
   margin-bottom: 100%;
   border: 0;
+  box-sizing: content-box;
 }

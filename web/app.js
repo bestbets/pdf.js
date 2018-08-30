@@ -104,17 +104,17 @@ var PAGE_NUMBER_LOADING_INDICATOR = 'visiblePageIsLoading';
 var DISABLE_AUTO_FETCH_LOADING_BAR_TIMEOUT = 5000;
 
 function configure(PDFJS) {
-  PDFJS.imageResourcesPath = './images/';
+  PDFJS.imageResourcesPath = '/web/pdfjs/images/';
   if (typeof PDFJSDev !== 'undefined' &&
       PDFJSDev.test('FIREFOX || MOZCENTRAL || GENERIC || CHROME')) {
-    PDFJS.workerSrc = '../build/pdf.worker.js';
+    PDFJS.workerSrc = '/web/pdfjs/js/pdf.worker.js';
   }
   if (typeof PDFJSDev === 'undefined' || !PDFJSDev.test('PRODUCTION')) {
     PDFJS.cMapUrl = '../external/bcmaps/';
     PDFJS.cMapPacked = true;
     PDFJS.workerSrc = '../src/worker_loader.js';
   } else {
-    PDFJS.cMapUrl = '../web/cmaps/';
+    PDFJS.cMapUrl = '/web/pdfjs/cmaps/';
     PDFJS.cMapPacked = true;
   }
 }
@@ -182,6 +182,10 @@ var PDFViewerApplication = {
   url: '',
   baseUrl: '',
   externalServices: DefaultExernalServices,
+  // CUSTOMISE
+  isChrome: false,
+  isInternetExplorer: false,
+  isMicrosoftEdge: false,
 
   // called once when the document is loaded
   initialize: function pdfViewInitialize(appConfig) {
@@ -523,15 +527,15 @@ var PDFViewerApplication = {
 
   setTitleUsingUrl: function pdfViewSetTitleUsingUrl(url) {
     this.url = url;
-    this.baseUrl = url.split('#')[0];
-    try {
-      this.setTitle(decodeURIComponent(
-        pdfjsLib.getFilenameFromUrl(url)) || url);
-    } catch (e) {
+     this.baseUrl = url.split('#')[0];
+   // try {
+     // this.setTitle(decodeURIComponent(
+       // pdfjsLib.getFilenameFromUrl(url)) || url);
+   // } catch (e) {
       // decodeURIComponent may throw URIError,
       // fall back to using the unprocessed url in that case
-      this.setTitle(url);
-    }
+      // this.setTitle(url);
+   // }
   },
 
   setTitle: function pdfViewSetTitle(title) {
@@ -539,7 +543,7 @@ var PDFViewerApplication = {
       // Embedded PDF viewers should not be changing their parent page's title.
       return;
     }
-    document.title = title;
+    // document.title = title;
   },
 
   /**
@@ -1265,6 +1269,7 @@ var PDFViewerApplication = {
     eventBus.on('openfile', webViewerOpenFile);
     eventBus.on('print', webViewerPrint);
     eventBus.on('download', webViewerDownload);
+    eventBus.on('subscribe', webViewerSubscribe);
     eventBus.on('firstpage', webViewerFirstPage);
     eventBus.on('lastpage', webViewerLastPage);
     eventBus.on('rotatecw', webViewerRotateCw);
@@ -1359,8 +1364,9 @@ function webViewerInitialized() {
       fileInput.value = null;
     }
   } else {
-    appConfig.toolbar.openFile.setAttribute('hidden', 'true');
-    appConfig.secondaryToolbar.openFileButton.setAttribute('hidden', 'true');
+     // CUSTOMISE - open file button is disabled
+	 // appConfig.toolbar.openFile.setAttribute('hidden', 'true');
+    // appConfig.secondaryToolbar.openFileButton.setAttribute('hidden', 'true');
   }
 
   var PDFJS = pdfjsLib.PDFJS;
@@ -1470,9 +1476,10 @@ function webViewerInitialized() {
       }
     }, true);
 
-  appConfig.sidebar.toggleButton.addEventListener('click', function() {
-    PDFViewerApplication.pdfSidebar.toggle();
-  });
+ // CUSTOMISE - sidebar has been disabled on bestbets.com
+ // appConfig.sidebar.toggleButton.addEventListener('click', function() {
+ //   PDFViewerApplication.pdfSidebar.toggle();
+ //  });
 
   appConfig.toolbar.previous.addEventListener('click', function() {
     PDFViewerApplication.page--;
@@ -1517,16 +1524,22 @@ function webViewerInitialized() {
 
   });
 
-  appConfig.toolbar.openFile.addEventListener('click', function (e) {
-    PDFViewerApplication.eventBus.dispatch('openfile');
-  });
+  // CUSTOMISE - openFile has been disabled on bestbets.com
+  // appConfig.toolbar.openFile.addEventListener('click', function (e) {
+  //  PDFViewerApplication.eventBus.dispatch('openfile');
+  // });
 
   appConfig.toolbar.print.addEventListener('click', function (e) {
     PDFViewerApplication.eventBus.dispatch('print');
   });
 
-  appConfig.toolbar.download.addEventListener('click', function (e) {
-    PDFViewerApplication.eventBus.dispatch('download');
+  // CUSTOMISE - download has been disabled on bestbets.com
+  // appConfig.toolbar.download.addEventListener('click', function (e) {
+  //  PDFViewerApplication.eventBus.dispatch('download');
+  // });
+  
+  appConfig.toolbar.subscribe.addEventListener('click', function(e) {
+	  PDFViewerApplication.eventBus.dispatch('subscribe');
   });
 
   Promise.all(waitForBeforeOpening).then(function () {
@@ -1729,8 +1742,9 @@ function webViewerUpdateViewarea(e) {
   }
   var href =
     PDFViewerApplication.pdfLinkService.getAnchorUrl(location.pdfOpenParams);
-  PDFViewerApplication.appConfig.toolbar.viewBookmark.href = href;
-  PDFViewerApplication.appConfig.secondaryToolbar.viewBookmarkButton.href =
+ // CUSTOMISE - bookmark has been disabled on bestbets.com
+ // PDFViewerApplication.appConfig.toolbar.viewBookmark.href = href;
+ // PDFViewerApplication.appConfig.secondaryToolbar.viewBookmarkButton.href =
     href;
 
   // Update the current bookmark in the browsing history.
@@ -1828,8 +1842,8 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
     appConfig.toolbar.viewBookmark.setAttribute('hidden', 'true');
     appConfig.secondaryToolbar.viewBookmarkButton.setAttribute('hidden',
                                                                'true');
-    appConfig.toolbar.download.setAttribute('hidden', 'true');
-    appConfig.secondaryToolbar.downloadButton.setAttribute('hidden', 'true');
+    //appConfig.toolbar.download.setAttribute('hidden', 'true');
+    //appConfig.secondaryToolbar.downloadButton.setAttribute('hidden', 'true');
   };
 }
 
@@ -1864,14 +1878,19 @@ function webViewerPresentationMode() {
   PDFViewerApplication.requestPresentationMode();
 }
 function webViewerOpenFile() {
-  var openFileInputName = PDFViewerApplication.appConfig.openFileInputName;
-  document.getElementById(openFileInputName).click();
+  // CUSTOMISE - openFile has been disabled on bestbets.com
+  // var openFileInputName = PDFViewerApplication.appConfig.openFileInputName;
+  // document.getElementById(openFileInputName).click();
 }
 function webViewerPrint() {
   window.print();
 }
 function webViewerDownload() {
-  PDFViewerApplication.download();
+   // CUSTOMISE - download has been disabled on bestbets.com
+  // PDFViewerApplication.download();
+}
+function webViewerSubscribe() {
+	window.location=document.getElementById("subscribe").getAttribute("subscribe-url");
 }
 function webViewerFirstPage() {
   if (PDFViewerApplication.pdfDocument) {
@@ -1890,7 +1909,8 @@ function webViewerRotateCcw() {
   PDFViewerApplication.rotatePages(-90);
 }
 function webViewerDocumentProperties() {
-  PDFViewerApplication.pdfDocumentProperties.open();
+   // CUSTOMISE - document Properties has been disabled on bestbets.com
+  // PDFViewerApplication.pdfDocumentProperties.open();
 }
 
 function webViewerFind(e) {
@@ -2089,7 +2109,8 @@ window.addEventListener('keydown', function keydown(evt) {
     if (cmd === 1 || cmd === 8) {
       switch (evt.keyCode) {
         case 83: // s
-          PDFViewerApplication.download();
+		// CUSTOMISE - download has been disabled on bestbets.com
+        //  PDFViewerApplication.download();
           handled = true;
           break;
       }

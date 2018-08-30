@@ -202,6 +202,12 @@ function parseQueryString(query) {
     var value = param.length > 1 ? param[1] : null;
     params[decodeURIComponent(key)] = decodeURIComponent(value);
   }
+  
+  if($("#pdfjs-file").length > 0)
+  {
+	  params[decodeURIComponent("file")] = decodeURIComponent($("#pdfjs-file").val());
+  }
+  
   return params;
 }
 
